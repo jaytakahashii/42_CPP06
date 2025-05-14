@@ -8,6 +8,7 @@ class ScalarConverter {
 
  private:
   ScalarConverter();
+
   static void parseLiteral(const std::string& literal, double& value,
                            bool& isSpecial);
   static void displayChar(double value);
