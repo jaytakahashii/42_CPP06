@@ -10,6 +10,10 @@ jobs:
         path:
           - "ex00/src"
           - "ex00/include"
+          - "ex01/src"
+          - "ex01/include"
+          - "ex02/src"
+          - "ex02/include"
 
     steps:
       - name: Checkout code
