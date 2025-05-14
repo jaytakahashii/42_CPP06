@@ -8,9 +8,9 @@ class ScalarConverter {
 
  private:
   ScalarConverter();
-  static double parseLiteral(const std::string& literal, bool& isFloat,
-                             bool& isSpecial, bool& isChar);
-  static void displayChar(double value, bool isChar);
+  static void parseLiteral(const std::string& literal, double& value,
+                           bool& isSpecial);
+  static void displayChar(double value);
   static void displayInt(double value, bool isSpecial);
   static void displayFloat(double value);
   static void displayDouble(double value);

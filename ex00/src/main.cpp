@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
   try {
     ScalarConverter::convert(argv[1]);
   } catch (const std::invalid_argument& e) {
-    std::cerr << RED << "Invalid input: " << e.what() << RESET << std::endl;
+    std::cerr << RED << e.what() << RESET << std::endl;
     return EXIT_FAILURE;
   } catch (const std::exception& e) {
     std::cerr << RED << "Error: " << e.what() << RESET << std::endl;
