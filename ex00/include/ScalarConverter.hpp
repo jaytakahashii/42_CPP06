@@ -14,14 +14,4 @@ class ScalarConverter {
   static void displayInt(double value, bool isSpecial);
   static void displayFloat(double value);
   static void displayDouble(double value);
-
-  class InvalidInputException : public std::exception {
-   public:
-    const char* what() const throw();
-  };
-
-  class NonDisplayableException : public std::exception {
-   public:
-    const char* what() const throw();
-  };
 };

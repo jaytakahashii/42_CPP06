@@ -7,6 +7,8 @@
 #include <limits>
 #include <sstream>
 
+#include "color.hpp"
+
 // ---------- 補助関数 ----------
 static bool isDisplayableChar(char c) {
   return c >= 32 && c <= 126;
@@ -32,7 +34,7 @@ double ScalarConverter::parseLiteral(const std::string& literal, bool& isFloat,
   }
 
   // char単体（例: 'a'）
-  if (literal.length() == 1 && !isdigit(literal[0])) {
+  if (literal.length() == 1 && !std::isdigit(literal[0])) {
     isChar = true;
     return static_cast<double>(literal[0]);
   }
@@ -47,7 +49,7 @@ double ScalarConverter::parseLiteral(const std::string& literal, bool& isFloat,
   char* endptr;
   value = std::strtod(copy.c_str(), &endptr);
   if (*endptr != '\0') {
-    throw std::invalid_argument("Invalid input");
+    throw std::invalid_argument(literal);
   }
 
   return value;
@@ -95,23 +97,10 @@ void ScalarConverter::convert(const std::string& literal) {
   bool isFloat, isSpecial, isChar;
   double value;
 
-  try {
-    value = parseLiteral(literal, isFloat, isSpecial, isChar);
-  } catch (const std::exception& e) {
-    throw InvalidInputException();
-    return;
-  }
+  value = parseLiteral(literal, isFloat, isSpecial, isChar);
 
   displayChar(value, isSpecial);
   displayInt(value, isSpecial);
   displayFloat(value);
   displayDouble(value);
-}
-
-const char* ScalarConverter::InvalidInputException::what() const throw() {
-  return "Invalid input";
-}
-
-const char* ScalarConverter::NonDisplayableException::what() const throw() {
-  return "Non displayable";
 }
