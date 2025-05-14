@@ -1,11 +1,117 @@
 #include "ScalarConverter.hpp"
 
-#include <cstdlib>  // atoi, atof
+#include <cctype>
+#include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <limits>
 #include <sstream>
 
+// ---------- 補助関数 ----------
+static bool isDisplayableChar(char c) {
+  return c >= 32 && c <= 126;
+}
+
+// ---------- パース ----------
+double ScalarConverter::parseLiteral(const std::string& literal, bool& isFloat,
+                                     bool& isSpecial, bool& isChar) {
+  isFloat = false;
+  isSpecial = false;
+  isChar = false;
+  double value = 0.0;
+
+  // 特殊値
+  if (literal == "nan" || literal == "+inf" || literal == "-inf") {
+    isSpecial = true;
+    return std::strtod(literal.c_str(), NULL);
+  }
+  if (literal == "nanf" || literal == "+inff" || literal == "-inff") {
+    isSpecial = true;
+    isFloat = true;
+    return std::strtod(literal.c_str(), NULL);
+  }
+
+  // char単体（例: 'a'）
+  if (literal.length() == 1 && !isdigit(literal[0])) {
+    isChar = true;
+    return static_cast<double>(literal[0]);
+  }
+
+  // float末尾除去（例: "42.0f"）
+  std::string copy = literal;
+  if (literal.length() > 1 && literal[literal.length() - 1] == 'f') {
+    isFloat = true;
+    copy = literal.substr(0, literal.length() - 1);
+  }
+
+  char* endptr;
+  value = std::strtod(copy.c_str(), &endptr);
+  if (*endptr != '\0') {
+    throw std::invalid_argument("Invalid input");
+  }
+
+  return value;
+}
+
+// ---------- 表示部 ----------
+void ScalarConverter::displayChar(double value, bool isSpecial) {
+  std::cout << "char: ";
+  if (isSpecial || value < 0 || value > 127) {
+    std::cout << "impossible" << std::endl;
+  } else {
+    char c = static_cast<char>(value);
+    if (!isDisplayableChar(c))
+      std::cout << "Non displayable" << std::endl;
+    else
+      std::cout << "'" << c << "'" << std::endl;
+  }
+}
+
+void ScalarConverter::displayInt(double value, bool isSpecial) {
+  std::cout << "int: ";
+  if (isSpecial ||
+      value < static_cast<double>(std::numeric_limits<int>::min()) ||
+      value > static_cast<double>(std::numeric_limits<int>::max())) {
+    std::cout << "impossible" << std::endl;
+  } else {
+    std::cout << static_cast<int>(value) << std::endl;
+  }
+}
+
+void ScalarConverter::displayFloat(double value) {
+  std::cout << "float: ";
+  std::cout << std::fixed << std::setprecision(1) << static_cast<float>(value)
+            << "f" << std::endl;
+}
+
+void ScalarConverter::displayDouble(double value) {
+  std::cout << "double: ";
+  std::cout << std::fixed << std::setprecision(1) << static_cast<double>(value)
+            << std::endl;
+}
+
+// ---------- メイン ----------
 void ScalarConverter::convert(const std::string& literal) {
-  // 実装予定：型判定 → パース → 各型へキャスト → 出力
+  bool isFloat, isSpecial, isChar;
+  double value;
+
+  try {
+    value = parseLiteral(literal, isFloat, isSpecial, isChar);
+  } catch (const std::exception& e) {
+    throw InvalidInputException();
+    return;
+  }
+
+  displayChar(value, isSpecial);
+  displayInt(value, isSpecial);
+  displayFloat(value);
+  displayDouble(value);
+}
+
+const char* ScalarConverter::InvalidInputException::what() const throw() {
+  return "Invalid input";
+}
+
+const char* ScalarConverter::NonDisplayableException::what() const throw() {
+  return "Non displayable";
 }

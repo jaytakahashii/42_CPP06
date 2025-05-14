@@ -1,6 +1,6 @@
 MAKEFILE 		= Makefile
 
-NAME				= ConversionOfScalarTypes
+NAME				= convert
 
 SRC_DIR			= src/
 OBJ_DIR			= .obj/
