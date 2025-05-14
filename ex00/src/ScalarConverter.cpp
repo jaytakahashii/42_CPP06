@@ -6,15 +6,11 @@
 #include <iostream>
 #include <limits>
 #include <sstream>
+#include <stdexcept>
 
 #include "color.hpp"
+#include "utils.hpp"
 
-// ---------- 補助関数 ----------
-static bool isDisplayableChar(char c) {
-  return c >= 32 && c <= 126;
-}
-
-// ---------- パース ----------
 double ScalarConverter::parseLiteral(const std::string& literal, bool& isFloat,
                                      bool& isSpecial, bool& isChar) {
   isFloat = false;
@@ -39,7 +35,7 @@ double ScalarConverter::parseLiteral(const std::string& literal, bool& isFloat,
     return static_cast<double>(literal[0]);
   }
 
-  // float末尾除去（例: "42.0f"）
+  // float末尾除去
   std::string copy = literal;
   if (literal.length() > 1 && literal[literal.length() - 1] == 'f') {
     isFloat = true;
@@ -56,9 +52,9 @@ double ScalarConverter::parseLiteral(const std::string& literal, bool& isFloat,
 }
 
 // ---------- 表示部 ----------
-void ScalarConverter::displayChar(double value, bool isSpecial) {
+void ScalarConverter::displayChar(double value, bool isChar) {
   std::cout << "char: ";
-  if (isSpecial || value < 0 || value > 127) {
+  if (!isChar || value < 0 || value > 127) {
     std::cout << "impossible" << std::endl;
   } else {
     char c = static_cast<char>(value);
