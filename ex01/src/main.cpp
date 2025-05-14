@@ -5,7 +5,7 @@
 int main() {
   Data original;
   original.id = 42;
-  original.name = "OpenAI";
+  original.name = "Tokyo";
 
   uintptr_t raw = Serializer::serialize(&original);
   Data* copy = Serializer::deserialize(raw);
