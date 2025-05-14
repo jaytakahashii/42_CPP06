@@ -19,20 +19,17 @@ static bool isSpecialValue(const std::string& literal) {
 
 void ScalarConverter::parseLiteral(const std::string& literal, double& value,
                                    bool& isSpecial) {
-  // 特殊値
   if (isSpecialValue(literal)) {
     isSpecial = true;
     value = std::strtod(literal.c_str(), NULL);
     return;
   }
 
-  // char単体（例: 'a'）
   if (literal.length() == 1 && !std::isdigit(literal[0])) {
     value = static_cast<double>(literal[0]);
     return;
   }
 
-  // float末尾除去
   std::string copy = literal;
   if (literal.length() > 1 && literal[literal.length() - 1] == 'f') {
     copy = literal.substr(0, literal.length() - 1);
@@ -45,7 +42,6 @@ void ScalarConverter::parseLiteral(const std::string& literal, double& value,
   }
 }
 
-// ---------- 表示部 ----------
 void ScalarConverter::displayChar(double value) {
   std::cout << "char: ";
   if (std::isnan(value) || value < 0 || value > 127) {
@@ -84,7 +80,6 @@ void ScalarConverter::displayDouble(double value) {
             << std::endl;
 }
 
-// ---------- メイン ----------
 void ScalarConverter::convert(const std::string& literal) {
   bool isSpecial = false;
   double value = 0.0;
