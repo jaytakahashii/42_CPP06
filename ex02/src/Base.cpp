@@ -19,37 +19,35 @@ Base* generate() {
   return new C();
 }
 
-// ポインタ版：dynamic_cast + nullptr チェック
 void identify(Base* p) {
   if (dynamic_cast<A*>(p))
-    std::cout << "A\n";
+    std::cout << "A" << std::endl;
   else if (dynamic_cast<B*>(p))
-    std::cout << "B\n";
+    std::cout << "B" << std::endl;
   else if (dynamic_cast<C*>(p))
-    std::cout << "C\n";
+    std::cout << "C" << std::endl;
   else
     std::cout << "Unknown\n";
 }
 
-// 参照版：dynamic_cast 例外を利用して判定
 void identify(Base& p) {
   try {
     (void)dynamic_cast<A&>(p);
-    std::cout << "A\n";
+    std::cout << "A" << std::endl;
     return;
   } catch (...) {
   }
 
   try {
     (void)dynamic_cast<B&>(p);
-    std::cout << "B\n";
+    std::cout << "B" << std::endl;
     return;
   } catch (...) {
   }
 
   try {
     (void)dynamic_cast<C&>(p);
-    std::cout << "C\n";
+    std::cout << "C" << std::endl;
     return;
   } catch (...) {
   }
