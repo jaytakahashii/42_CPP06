@@ -14,25 +14,23 @@
 
 static bool isSpecialValue(const std::string& literal) {
   return literal == "nan" || literal == "+inf" || literal == "-inf" ||
-         literal == "nanf" || literal == "+inff" || literal == "-inff";
+         literal == "nanf" || literal == "+inff" || literal == "-inff" ||
+         literal == "inf" || literal == "inff";
 }
 
 void ScalarConverter::parseLiteral(const std::string& literal, double& value,
                                    bool& isSpecial) {
-  // 特殊値
   if (isSpecialValue(literal)) {
     isSpecial = true;
     value = std::strtod(literal.c_str(), NULL);
     return;
   }
 
-  // char単体（例: 'a'）
   if (literal.length() == 1 && !std::isdigit(literal[0])) {
     value = static_cast<double>(literal[0]);
     return;
   }
 
-  // float末尾除去
   std::string copy = literal;
   if (literal.length() > 1 && literal[literal.length() - 1] == 'f') {
     copy = literal.substr(0, literal.length() - 1);
@@ -45,7 +43,6 @@ void ScalarConverter::parseLiteral(const std::string& literal, double& value,
   }
 }
 
-// ---------- 表示部 ----------
 void ScalarConverter::displayChar(double value) {
   std::cout << "char: ";
   if (std::isnan(value) || value < 0 || value > 127) {
@@ -72,19 +69,45 @@ void ScalarConverter::displayInt(double value, bool isSpecial) {
   }
 }
 
-void ScalarConverter::displayFloat(double value) {
+void ScalarConverter::displayFloat(double value, bool isSpecial) {
   std::cout << "float: ";
-  std::cout << std::fixed << std::setprecision(1) << static_cast<float>(value)
-            << "f" << std::endl;
+
+  if (isSpecial) {
+    std::cout << static_cast<float>(value);
+    std::cout << "f" << std::endl;
+    return;
+  }
+
+  std::ostringstream oss;
+  oss << value;
+  std::string strValue = oss.str();
+
+  std::cout << static_cast<float>(value);
+  if (strValue.find('.') == std::string::npos && !isSpecialValue(strValue)) {
+    std::cout << ".0";
+  }
+  std::cout << "f" << std::endl;
 }
 
-void ScalarConverter::displayDouble(double value) {
+void ScalarConverter::displayDouble(double value, bool isSpecial) {
   std::cout << "double: ";
-  std::cout << std::fixed << std::setprecision(1) << static_cast<double>(value)
-            << std::endl;
+
+  if (isSpecial) {
+    std::cout << static_cast<double>(value) << std::endl;
+    return;
+  }
+
+  std::ostringstream oss;
+  oss << value;
+  std::string strValue = oss.str();
+
+  std::cout << static_cast<double>(value);
+  if (strValue.find('.') == std::string::npos && !isSpecialValue(strValue)) {
+    std::cout << ".0";
+  }
+  std::cout << std::endl;
 }
 
-// ---------- メイン ----------
 void ScalarConverter::convert(const std::string& literal) {
   bool isSpecial = false;
   double value = 0.0;
@@ -93,6 +116,6 @@ void ScalarConverter::convert(const std::string& literal) {
 
   displayChar(value);
   displayInt(value, isSpecial);
-  displayFloat(value);
-  displayDouble(value);
+  displayFloat(value, isSpecial);
+  displayDouble(value, isSpecial);
 }
