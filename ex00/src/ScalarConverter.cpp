@@ -14,7 +14,8 @@
 
 static bool isSpecialValue(const std::string& literal) {
   return literal == "nan" || literal == "+inf" || literal == "-inf" ||
-         literal == "nanf" || literal == "+inff" || literal == "-inff";
+         literal == "nanf" || literal == "+inff" || literal == "-inff" ||
+         literal == "inf" || literal == "inff";
 }
 
 void ScalarConverter::parseLiteral(const std::string& literal, double& value,
@@ -68,16 +69,43 @@ void ScalarConverter::displayInt(double value, bool isSpecial) {
   }
 }
 
-void ScalarConverter::displayFloat(double value) {
+void ScalarConverter::displayFloat(double value, bool isSpecial) {
   std::cout << "float: ";
-  std::cout << std::fixed << std::setprecision(1) << static_cast<float>(value)
-            << "f" << std::endl;
+
+  if (isSpecial) {
+    std::cout << static_cast<float>(value);
+    std::cout << "f" << std::endl;
+    return;
+  }
+
+  std::ostringstream oss;
+  oss << value;
+  std::string strValue = oss.str();
+
+  std::cout << static_cast<float>(value);
+  if (strValue.find('.') == std::string::npos && !isSpecialValue(strValue)) {
+    std::cout << ".0";
+  }
+  std::cout << "f" << std::endl;
 }
 
-void ScalarConverter::displayDouble(double value) {
+void ScalarConverter::displayDouble(double value, bool isSpecial) {
   std::cout << "double: ";
-  std::cout << std::fixed << std::setprecision(1) << static_cast<double>(value)
-            << std::endl;
+
+  if (isSpecial) {
+    std::cout << static_cast<double>(value) << std::endl;
+    return;
+  }
+
+  std::ostringstream oss;
+  oss << value;
+  std::string strValue = oss.str();
+
+  std::cout << static_cast<double>(value);
+  if (strValue.find('.') == std::string::npos && !isSpecialValue(strValue)) {
+    std::cout << ".0";
+  }
+  std::cout << std::endl;
 }
 
 void ScalarConverter::convert(const std::string& literal) {
@@ -88,6 +116,6 @@ void ScalarConverter::convert(const std::string& literal) {
 
   displayChar(value);
   displayInt(value, isSpecial);
-  displayFloat(value);
-  displayDouble(value);
+  displayFloat(value, isSpecial);
+  displayDouble(value, isSpecial);
 }

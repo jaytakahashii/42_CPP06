@@ -13,6 +13,6 @@ class ScalarConverter {
                            bool& isSpecial);
   static void displayChar(double value);
   static void displayInt(double value, bool isSpecial);
-  static void displayFloat(double value);
-  static void displayDouble(double value);
+  static void displayFloat(double value, bool isSpecial);
+  static void displayDouble(double value, bool isSpecial);
 };
