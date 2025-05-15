@@ -2,7 +2,6 @@
 
 #include <inttypes.h>
 
-#include <cstdint>
 #include <string>
 
 struct Data {
